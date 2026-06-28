@@ -26,6 +26,8 @@ function Get-ManagedSourcePath([string]$Path) {
 $lockPath = Join-Path $ProjectRoot ".agents/shared-rules.lock.yaml"
 if (!$SharedRepo) { $SharedRepo = Read-LockValue $lockPath "local_path" }
 if (!$SharedRepo) { $SharedRepo = Join-Path $CloneRoot "agent-rules" }
+if (![IO.Path]::IsPathRooted($SharedRepo)) { $SharedRepo = Join-Path $ProjectRoot $SharedRepo }
+$SharedRepo = [IO.Path]::GetFullPath($SharedRepo)
 
 if (!(Test-Path $SharedRepo)) {
   $repoUrl = Read-LockValue $lockPath "repo"

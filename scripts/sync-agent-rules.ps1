@@ -76,6 +76,8 @@ function Assert-NoUnsafeLocalChange([string]$Repo, [string]$OldRef, [string]$Sou
 if (!$LockPath) { $LockPath = Join-Path $ProjectRoot ".agents/shared-rules.lock.yaml" }
 if (!$SharedRepo) { $SharedRepo = Read-LockValue $LockPath "local_path" }
 if (!$SharedRepo) { $SharedRepo = Join-Path (Split-Path $ProjectRoot -Parent) "agent-rules" }
+if (![IO.Path]::IsPathRooted($SharedRepo)) { $SharedRepo = Join-Path $ProjectRoot $SharedRepo }
+$SharedRepo = [IO.Path]::GetFullPath($SharedRepo)
 if (!(Test-Path $SharedRepo)) { throw "Shared repo not found: $SharedRepo" }
 
 $manifestPath = Join-Path $SharedRepo "manifest.yaml"
@@ -121,7 +123,7 @@ try {
 version: 1
 source:
   repo: https://github.com/1008k/agent-rules.git
-  local_path: $SharedRepo
+  local_path: ../agent-rules
   ref: $resolvedRef
 managed:
   - docs/integrations/
