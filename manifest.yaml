@@ -1,0 +1,22 @@
+version: 1
+name: agent-rules
+source_repo: https://github.com/1008k/agent-rules.git
+managed_header: agent-rules
+
+sync_targets:
+  - source: docs/integrations/
+    destination: docs/integrations/
+    type: integration-docs
+    overwrite: true
+    description: Shared optional integration and extension decision memos.
+  - source: .agents/skills/
+    destination: .agents/skills/
+    type: codex-skills
+    overwrite: true
+    description: Shared Codex-compatible skills and their references.
+
+local_extension_policy:
+  keep_unmanaged_files: true
+  shared_name_conflicts: stop
+  project_specific_docs: docs/integrations/
+  project_specific_skills: .agents/skills/
