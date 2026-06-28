@@ -51,6 +51,11 @@ function Get-GitFileTextOrNull([string]$Repo, [string]$Commit, [string]$Path) {
   return ($output -join "`n") + "`n"
 }
 
+function Normalize-FileTextForCompare([string]$Text) {
+  if ($null -eq $Text) { return $null }
+  return $Text.Replace("`r`n", "`n")
+}
+
 function Assert-NoUnsafeLocalChange([string]$Repo, [string]$OldRef, [string]$SourcePath, [string]$DestPath, [string]$NewText) {
   $currentText = Get-FileTextOrNull $DestPath
   if ($null -eq $currentText) { return }
@@ -60,7 +65,10 @@ function Assert-NoUnsafeLocalChange([string]$Repo, [string]$OldRef, [string]$Sou
     throw "Refusing to overwrite unmanaged file: $DestPath. Re-run with -Force only when adopting it into agent-rules."
   }
   $oldText = Get-GitFileTextOrNull $Repo $OldRef $SourcePath
-  if ($oldText -and $currentText -ne $oldText -and $currentText -ne $NewText) {
+  $currentCompare = Normalize-FileTextForCompare $currentText
+  $oldCompare = Normalize-FileTextForCompare $oldText
+  $newCompare = Normalize-FileTextForCompare $NewText
+  if ($oldCompare -and $currentCompare -ne $oldCompare -and $currentCompare -ne $newCompare) {
     throw "Local changes detected in managed file: $DestPath. Move the change to the shared source with scripts/propose-shared-rule-change.ps1."
   }
 }
