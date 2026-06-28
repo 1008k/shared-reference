@@ -123,6 +123,7 @@ if (!(Test-Path $SharedRepo)) { throw "Shared repo not found: $SharedRepo" }
 
 $manifestPath = Join-Path $SharedRepo "manifest.yaml"
 if (!(Test-Path $manifestPath)) { throw "Missing manifest: $manifestPath" }
+$targets = @(Read-SyncTargets $manifestPath)
 
 $oldRef = Read-LockValue $LockPath "ref"
 $disabled = @(Read-LockList $LockPath "disabled")
@@ -145,7 +146,7 @@ if ($Ref) {
 }
 
 try {
-  foreach ($target in Read-SyncTargets $manifestPath) {
+  foreach ($target in $targets) {
     $sourceDir = Join-Path $sourceRoot $target.Source
     $destDir = Join-Path $ProjectRoot $target.Destination
     if (!(Test-Path $sourceDir)) { throw "Missing source directory: $sourceDir" }
@@ -172,15 +173,14 @@ try {
     New-Item -ItemType Directory -Force (Split-Path $LockPath -Parent) | Out-Null
     $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
     $disabledBlock = Format-LockList "disabled" $disabled
+    $managedBlock = Format-LockList "managed" @($targets | ForEach-Object { $_.Destination + "/" })
     @"
 version: 1
 source:
   repo: https://github.com/1008k/agent-rules.git
   local_path: ../agent-rules
   ref: $resolvedRef
-managed:
-  - docs/integrations/
-  - .agents/skills/
+$managedBlock
 $disabledBlock
 last_synced_at: $timestamp
 "@ | Set-Content -Encoding UTF8 -NoNewline $LockPath
