@@ -18,7 +18,7 @@ function Read-LockValue([string]$Path, [string]$Key) {
 }
 
 function Get-ManagedSourcePath([string]$Path) {
-  $match = Select-String -Path $Path -Pattern 'source-path:\s*(.+?)\s*-->' | Select-Object -First 1
+  $match = Select-String -Path $Path -Pattern 'source-path:\s*(.+?)(?:\s*-->|\s*$)' | Select-Object -First 1
   if (!$match) { throw "No agent-rules source-path header found in $Path" }
   return $match.Matches[0].Groups[1].Value.Trim()
 }

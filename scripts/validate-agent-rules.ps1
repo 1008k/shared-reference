@@ -55,9 +55,14 @@ $manifestPath = Join-Path $RepoRoot "manifest.yaml"
 if (!(Test-Path $manifestPath)) { throw "Missing manifest.yaml" }
 
 foreach ($target in Read-SyncTargets $manifestPath) {
-  $sourceDir = Join-Path $RepoRoot $target.Source
-  if (!(Test-Path $sourceDir)) { throw "Missing sync source: $($target.Source)" }
-  foreach ($file in Get-ChildItem -Recurse -File $sourceDir) {
+  $sourcePath = Join-Path $RepoRoot $target.Source
+  if (!(Test-Path $sourcePath)) { throw "Missing sync source: $($target.Source)" }
+  $files = if (Test-Path $sourcePath -PathType Leaf) {
+    @(Get-Item $sourcePath)
+  } else {
+    @(Get-ChildItem -Recurse -File $sourcePath)
+  }
+  foreach ($file in $files) {
     if ($file.Extension -notin @(".md", ".txt")) { continue }
     $relative = Normalize-PathText ([IO.Path]::GetRelativePath($RepoRoot, $file.FullName))
     Assert-ManagedHeader $file $relative

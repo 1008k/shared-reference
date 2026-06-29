@@ -4,6 +4,11 @@ source_repo: https://github.com/1008k/agent-rules.git
 managed_header: agent-rules
 
 sync_targets:
+  - source: shared-index.yaml
+    destination: .shared/shared-index.yaml
+    type: shared-index
+    overwrite: true
+    description: Shared vendor index for project policy hubs.
   - source: docs/
     destination: .shared/docs/
     type: shared-docs

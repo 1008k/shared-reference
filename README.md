@@ -49,14 +49,14 @@ docs/
 
 .shared/
   agent-rules.lock.yaml
+  shared-index.yaml
   docs/
-    shared-index.yaml
     shared-rules/
     integrations/
   skills/
 ```
 
-Project-owned documents stay in `docs/`. Vendored shared documents and skills stay under `.shared/`. The project `docs/policy-index.yaml` should link to `.shared/docs/shared-index.yaml` when shared guidance is relevant.
+Project-owned documents stay in `docs/`. Vendored shared documents and skills stay under `.shared/`. The project `docs/policy-index.yaml` should link to `.shared/shared-index.yaml` when shared guidance is relevant.
 
 ## Local Overrides
 

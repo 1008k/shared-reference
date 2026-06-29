@@ -106,6 +106,13 @@ function Test-DisabledPath([string]$Path, [string[]]$DisabledPaths) {
   return $false
 }
 
+function Get-ManagedDestinationForLock($Target, [string]$SourceRoot) {
+  $sourcePath = Join-Path $SourceRoot $Target.Source
+  $destination = $Target.Destination
+  if (Test-Path $sourcePath -PathType Container) { return $destination.TrimEnd("/") + "/" }
+  return $destination
+}
+
 function Assert-NoUnsafeLocalChange([string]$Repo, [string]$OldRef, [string]$SourcePath, [string]$DestPath, [string]$NewText) {
   $currentText = Get-FileTextOrNull $DestPath
   if ($null -eq $currentText) { return }
@@ -157,24 +164,42 @@ if ($Ref) {
 
 try {
   foreach ($target in $targets) {
-    $sourceDir = Join-Path $sourceRoot $target.Source
-    $destDir = Join-Path $ProjectRoot $target.Destination
-    if (!(Test-Path $sourceDir)) { throw "Missing source directory: $sourceDir" }
-    foreach ($sourceFile in Get-ChildItem -Recurse -File $sourceDir) {
-      $relativeFromTarget = [IO.Path]::GetRelativePath($sourceDir, $sourceFile.FullName)
-      $sourceRel = (Normalize-PathText (Join-Path $target.Source $relativeFromTarget))
+    $sourcePath = Join-Path $sourceRoot $target.Source
+    $destPath = Join-Path $ProjectRoot $target.Destination
+    if (!(Test-Path $sourcePath)) { throw "Missing sync source: $sourcePath" }
+    if (Test-Path $sourcePath -PathType Leaf) {
+      $sourceRel = Normalize-PathText $target.Source
       if (Test-DisabledPath $sourceRel $disabled) {
         Write-Output "Skipping disabled shared file: $sourceRel"
         continue
       }
-      $destPath = Join-Path $destDir $relativeFromTarget
-      $newText = Get-Content -Raw -Encoding UTF8 $sourceFile.FullName
+      $newText = Get-Content -Raw -Encoding UTF8 $sourcePath
       Assert-NoUnsafeLocalChange $SharedRepo $oldRef $sourceRel $destPath $newText
       if ($DryRun) {
         Write-Output "Would sync $sourceRel -> $destPath"
       } else {
         New-Item -ItemType Directory -Force (Split-Path $destPath -Parent) | Out-Null
-        Copy-Item -Force $sourceFile.FullName $destPath
+        Copy-Item -Force $sourcePath $destPath
+      }
+    } else {
+      $sourceDir = $sourcePath
+      $destDir = $destPath
+      foreach ($sourceFile in Get-ChildItem -Recurse -File $sourceDir) {
+        $relativeFromTarget = [IO.Path]::GetRelativePath($sourceDir, $sourceFile.FullName)
+        $sourceRel = (Normalize-PathText (Join-Path $target.Source $relativeFromTarget))
+        if (Test-DisabledPath $sourceRel $disabled) {
+          Write-Output "Skipping disabled shared file: $sourceRel"
+          continue
+        }
+        $fileDestPath = Join-Path $destDir $relativeFromTarget
+        $newText = Get-Content -Raw -Encoding UTF8 $sourceFile.FullName
+        Assert-NoUnsafeLocalChange $SharedRepo $oldRef $sourceRel $fileDestPath $newText
+        if ($DryRun) {
+          Write-Output "Would sync $sourceRel -> $fileDestPath"
+        } else {
+          New-Item -ItemType Directory -Force (Split-Path $fileDestPath -Parent) | Out-Null
+          Copy-Item -Force $sourceFile.FullName $fileDestPath
+        }
       }
     }
   }
@@ -183,7 +208,7 @@ try {
     New-Item -ItemType Directory -Force (Split-Path $LockPath -Parent) | Out-Null
     $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
     $disabledBlock = Format-LockList "disabled" $disabled
-    $managedBlock = Format-LockList "managed" @($targets | ForEach-Object { $_.Destination + "/" })
+    $managedBlock = Format-LockList "managed" @($targets | ForEach-Object { Get-ManagedDestinationForLock $_ $sourceRoot })
     @"
 version: 1
 source:

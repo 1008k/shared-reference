@@ -1,9 +1,10 @@
 # managed-by: agent-rules
-# source-path: docs/shared-index.yaml
+# source-path: shared-index.yaml
 version: 1
 source_repo: https://github.com/1008k/agent-rules.git
 
 sources:
+  shared_docs_directory: .shared/docs/
   shared_rules_directory: .shared/docs/shared-rules/
   shared_integrations_directory: .shared/docs/integrations/
   shared_skills_directory: .shared/skills/

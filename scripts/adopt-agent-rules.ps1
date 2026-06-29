@@ -116,6 +116,7 @@ source:
   local_path: $relativeSharedRepo
   ref: $resolvedRef
 managed:
+  - .shared/shared-index.yaml
   - .shared/docs/
   - .shared/skills/
 disabled: []
