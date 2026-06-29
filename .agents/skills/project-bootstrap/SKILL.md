@@ -2,8 +2,8 @@
 name: project-bootstrap
 description: Concretize a new project from `docs/initial-brief.md` into the frontmatter and body of `docs/project-spec.md`. Use when starting from this template or when the project direction is still underspecified.
 ---
-<!-- managed-by: agent-rules -->
-<!-- source-repo: https://github.com/1008k/agent-rules -->
+<!-- managed-by: shared-reference -->
+<!-- source-repo: https://github.com/1008k/shared-reference -->
 <!-- source-path: .agents/skills/project-bootstrap/SKILL.md -->
 
 # Project Bootstrap

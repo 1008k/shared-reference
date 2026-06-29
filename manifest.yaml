@@ -1,7 +1,7 @@
 version: 2
-name: agent-rules
-source_repo: https://github.com/1008k/agent-rules.git
-managed_header: agent-rules
+name: shared-reference
+source_repo: https://github.com/1008k/shared-reference.git
+managed_header: shared-reference
 
 sync_targets:
   - source: shared-index.yaml

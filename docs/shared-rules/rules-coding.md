@@ -1,5 +1,5 @@
-<!-- managed-by: agent-rules -->
-<!-- source-repo: https://github.com/1008k/agent-rules -->
+<!-- managed-by: shared-reference -->
+<!-- source-repo: https://github.com/1008k/shared-reference -->
 <!-- source-path: docs/shared-rules/rules-coding.md -->
 
 # コーディングルール

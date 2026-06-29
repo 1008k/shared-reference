@@ -2,8 +2,8 @@
 name: web-a11y-review
 description: Review and improve web accessibility for HTML, CSS, JavaScript, React, Astro, WordPress themes, landing pages, blog/Markdown content, forms, navigation, modals, tabs, accordions, and delivery checks. Use when asked to inspect UI accessibility, apply Digital Agency web accessibility guidance in Japanese projects, propose fixes, or create practical accessibility review output.
 ---
-<!-- managed-by: agent-rules -->
-<!-- source-repo: https://github.com/1008k/agent-rules -->
+<!-- managed-by: shared-reference -->
+<!-- source-repo: https://github.com/1008k/shared-reference -->
 <!-- source-path: .agents/skills/web-a11y-review/SKILL.md -->
 
 # Web A11y Review

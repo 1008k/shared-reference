@@ -2,8 +2,8 @@
 name: docs-sync
 description: Check and reconcile gaps across `docs/project-spec.md`, `README.md`, and `ARCHITECTURE.md`. Use when updating project docs, reviewing drift after implementation, or confirming which document should be the source of truth.
 ---
-<!-- managed-by: agent-rules -->
-<!-- source-repo: https://github.com/1008k/agent-rules -->
+<!-- managed-by: shared-reference -->
+<!-- source-repo: https://github.com/1008k/shared-reference -->
 <!-- source-path: .agents/skills/docs-sync/SKILL.md -->
 
 # Docs Sync
