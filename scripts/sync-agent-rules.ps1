@@ -43,6 +43,15 @@ function Read-LockList([string]$Path, [string]$Key) {
   return @()
 }
 
+function Resolve-ReadLockPath([string]$ProjectRoot, [string]$RequestedLockPath) {
+  if ($RequestedLockPath) { return $RequestedLockPath }
+  $newPath = Join-Path $ProjectRoot ".shared/agent-rules.lock.yaml"
+  $oldPath = Join-Path $ProjectRoot ".agents/shared-rules.lock.yaml"
+  if (Test-Path $newPath) { return $newPath }
+  if (Test-Path $oldPath) { return $oldPath }
+  return $newPath
+}
+
 function Format-LockList([string]$Key, [string[]]$Items) {
   if (!$Items -or $Items.Count -eq 0) { return "${Key}: []" }
   $lines = @("${Key}:")
@@ -114,8 +123,9 @@ function Assert-NoUnsafeLocalChange([string]$Repo, [string]$OldRef, [string]$Sou
   }
 }
 
-if (!$LockPath) { $LockPath = Join-Path $ProjectRoot ".agents/shared-rules.lock.yaml" }
-if (!$SharedRepo) { $SharedRepo = Read-LockValue $LockPath "local_path" }
+$ReadLockPath = Resolve-ReadLockPath $ProjectRoot $LockPath
+if (!$LockPath) { $LockPath = Join-Path $ProjectRoot ".shared/agent-rules.lock.yaml" }
+if (!$SharedRepo) { $SharedRepo = Read-LockValue $ReadLockPath "local_path" }
 if (!$SharedRepo) { $SharedRepo = Join-Path (Split-Path $ProjectRoot -Parent) "agent-rules" }
 if (![IO.Path]::IsPathRooted($SharedRepo)) { $SharedRepo = Join-Path $ProjectRoot $SharedRepo }
 $SharedRepo = [IO.Path]::GetFullPath($SharedRepo)
@@ -125,8 +135,8 @@ $manifestPath = Join-Path $SharedRepo "manifest.yaml"
 if (!(Test-Path $manifestPath)) { throw "Missing manifest: $manifestPath" }
 $targets = @(Read-SyncTargets $manifestPath)
 
-$oldRef = Read-LockValue $LockPath "ref"
-$disabled = @(Read-LockList $LockPath "disabled")
+$oldRef = Read-LockValue $ReadLockPath "ref"
+$disabled = @(Read-LockList $ReadLockPath "disabled")
 if (!$Ref) {
   $dirty = & git -C $SharedRepo status --porcelain --untracked-files=all
   if ($dirty) {

@@ -1,0 +1,24 @@
+# managed-by: agent-rules
+# source-path: docs/shared-index.yaml
+version: 1
+source_repo: https://github.com/1008k/agent-rules.git
+
+sources:
+  shared_rules_directory: .shared/docs/shared-rules/
+  shared_integrations_directory: .shared/docs/integrations/
+  shared_skills_directory: .shared/skills/
+
+policy:
+  role: shared-baseline-reference
+  precedence: lower-than-project-docs
+  editing:
+    managed_by: agent-rules
+    do_not_edit_vendor_copy: true
+    propose_change_command: scripts/propose-shared-rule-change.ps1
+  skill_discovery:
+    shared_skills_are_vendored_under: .shared/skills/
+    project_specific_or_discovery_shims: .agents/skills/
+  local_overrides:
+    rules: docs/rules-*.md
+    integrations: docs/integrations/
+    skills: .agents/skills/

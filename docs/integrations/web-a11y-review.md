@@ -8,7 +8,8 @@
 ## 位置付け
 
 - 採用区分: 任意だが、Web UI、LP、記事、WordPressテーマ、React/Astroコンポーネントでは推奨。
-- 記録先: `.agents/skills/web-a11y-review/`
+- 共有skill正本: `.agents/skills/web-a11y-review/`
+- プロジェクトへの同期先: `.shared/skills/web-a11y-review/`
 - 参照元: デジタル庁「ウェブアクセシビリティ導入ガイドブック」2025年10月16日更新版 https://www.digital.go.jp/resources/introduction-to-web-accessibility-guidebook
 - 目的: 公式資料の考え方を、実装レビュー、修正提案、納品前確認で使える観点に再構成する。
 

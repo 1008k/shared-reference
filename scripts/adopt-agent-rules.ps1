@@ -51,7 +51,7 @@ function Read-LockValue([string]$Path, [string]$Key) {
   return $match.Matches[0].Groups[1].Value.Trim('"').Trim("'")
 }
 
-if (!$LockPath) { $LockPath = Join-Path $ProjectRoot ".agents/shared-rules.lock.yaml" }
+if (!$LockPath) { $LockPath = Join-Path $ProjectRoot ".shared/agent-rules.lock.yaml" }
 if (!$SharedRepo) { $SharedRepo = Read-LockValue $LockPath "local_path" }
 if (!$SharedRepo) { $SharedRepo = Join-Path $CloneRoot "agent-rules" }
 if (![IO.Path]::IsPathRooted($SharedRepo)) { $SharedRepo = Join-Path $ProjectRoot $SharedRepo }
@@ -90,7 +90,7 @@ function Read-LockValue([string]$Path, [string]$Key) {
   return $match.Matches[0].Groups[1].Value.Trim('"').Trim("'")
 }
 
-$lockPath = Join-Path $ProjectRoot ".agents/shared-rules.lock.yaml"
+$lockPath = Join-Path $ProjectRoot ".shared/agent-rules.lock.yaml"
 if (!$SharedRepo) { $SharedRepo = Read-LockValue $lockPath "local_path" }
 if (!$SharedRepo) { $SharedRepo = Join-Path $CloneRoot "agent-rules" }
 if (![IO.Path]::IsPathRooted($SharedRepo)) { $SharedRepo = Join-Path $ProjectRoot $SharedRepo }
@@ -116,16 +116,15 @@ source:
   local_path: $relativeSharedRepo
   ref: $resolvedRef
 managed:
-  - docs/integrations/
-  - .agents/skills/
-  - .agents/shared-rules/
+  - .shared/docs/
+  - .shared/skills/
 disabled: []
 last_synced_at: pending-adoption
 "@
 
 Write-ProjectWrapper (Join-Path $ProjectRoot "scripts/sync-agent-rules.ps1") $syncWrapper
 Write-ProjectWrapper (Join-Path $ProjectRoot "scripts/propose-shared-rule-change.ps1") $proposeWrapper
-Write-ProjectWrapper (Join-Path $ProjectRoot ".agents/shared-rules.lock.yaml") $lock
+Write-ProjectWrapper (Join-Path $ProjectRoot ".shared/agent-rules.lock.yaml") $lock
 
 if ($DryRun) {
   Write-Output "Would sync managed files from $resolvedRef"

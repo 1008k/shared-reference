@@ -23,7 +23,11 @@ function Get-ManagedSourcePath([string]$Path) {
   return $match.Matches[0].Groups[1].Value.Trim()
 }
 
-$lockPath = Join-Path $ProjectRoot ".agents/shared-rules.lock.yaml"
+$lockPath = Join-Path $ProjectRoot ".shared/agent-rules.lock.yaml"
+if (!(Test-Path $lockPath)) {
+  $legacyLockPath = Join-Path $ProjectRoot ".agents/shared-rules.lock.yaml"
+  if (Test-Path $legacyLockPath) { $lockPath = $legacyLockPath }
+}
 if (!$SharedRepo) { $SharedRepo = Read-LockValue $lockPath "local_path" }
 if (!$SharedRepo) { $SharedRepo = Join-Path $CloneRoot "agent-rules" }
 if (![IO.Path]::IsPathRooted($SharedRepo)) { $SharedRepo = Join-Path $ProjectRoot $SharedRepo }

@@ -70,5 +70,6 @@
 
 ## 記録先
 - リポジトリ固有skillは `.agents/skills/<skill-name>/SKILL.md`
+- 共有repo由来のskillは、プロジェクト側では `.shared/skills/<skill-name>/SKILL.md` にvendor同期される
 - skill追加の背景や補足判断は、必要ならこのディレクトリや `docs/tracks/` に残す
 - 短い恒久ルールへ落とし込める部分は、必要に応じて `AGENTS.md` へ戻す
