@@ -13,6 +13,14 @@ function Normalize-PathText([string]$Value) {
   return $Value.Replace("\", "/").Trim("/")
 }
 
+function Get-RelativePathCompat([string]$BasePath, [string]$Path) {
+  $baseFullPath = [IO.Path]::GetFullPath($BasePath).TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
+  $targetFullPath = [IO.Path]::GetFullPath($Path)
+  $baseUri = New-Object System.Uri($baseFullPath)
+  $targetUri = New-Object System.Uri($targetFullPath)
+  return [Uri]::UnescapeDataString($baseUri.MakeRelativeUri($targetUri).ToString()).Replace("/", [IO.Path]::DirectorySeparatorChar)
+}
+
 function Read-LockValue([string]$Path, [string]$Key) {
   if (!(Test-Path $Path)) { return $null }
   $pattern = "^\s*$([regex]::Escape($Key)):\s*(.+?)\s*$"
@@ -222,7 +230,7 @@ try {
       $sourceDir = $sourcePath
       $destDir = $destPath
       foreach ($sourceFile in Get-ChildItem -Recurse -File $sourceDir) {
-        $relativeFromTarget = [IO.Path]::GetRelativePath($sourceDir, $sourceFile.FullName)
+        $relativeFromTarget = Get-RelativePathCompat $sourceDir $sourceFile.FullName
         $sourceRel = (Normalize-PathText (Join-Path $target.Source $relativeFromTarget))
         if (Test-DisabledPath $sourceRel $disabled) {
           Write-Output "Skipping disabled shared file: $sourceRel"
