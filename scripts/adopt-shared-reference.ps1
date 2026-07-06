@@ -32,16 +32,19 @@ $relativeSharedRepo = "../shared-reference"
 
 $syncWrapper = @'
 param(
-  [string]$ProjectRoot = (Get-Location).Path,
+  [string]$ProjectRoot = (Split-Path $PSScriptRoot -Parent),
   [string]$SharedRepo,
   [string]$Ref,
   [string]$LockPath,
-  [string]$CloneRoot = (Split-Path (Get-Location).Path -Parent),
+  [string]$CloneRoot = (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent),
   [switch]$Force,
   [switch]$DryRun
 )
 
 $ErrorActionPreference = "Stop"
+
+$ProjectRoot = [IO.Path]::GetFullPath($ProjectRoot)
+$CloneRoot = [IO.Path]::GetFullPath($CloneRoot)
 
 function Read-LockValue([string]$Path, [string]$Key) {
   if (!(Test-Path $Path)) { return $null }
@@ -74,13 +77,16 @@ $proposeWrapper = @'
 param(
   [Parameter(Mandatory = $true)]
   [string]$VendorPath,
-  [string]$ProjectRoot = (Get-Location).Path,
+  [string]$ProjectRoot = (Split-Path $PSScriptRoot -Parent),
   [string]$SharedRepo,
-  [string]$CloneRoot = (Split-Path (Get-Location).Path -Parent),
+  [string]$CloneRoot = (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent),
   [switch]$ApplyVendorDiff
 )
 
 $ErrorActionPreference = "Stop"
+
+$ProjectRoot = [IO.Path]::GetFullPath($ProjectRoot)
+$CloneRoot = [IO.Path]::GetFullPath($CloneRoot)
 
 function Read-LockValue([string]$Path, [string]$Key) {
   if (!(Test-Path $Path)) { return $null }

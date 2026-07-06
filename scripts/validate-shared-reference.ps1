@@ -8,6 +8,18 @@ function Normalize-PathText([string]$Value) {
   return $Value.Replace("\", "/").Trim("/")
 }
 
+function Get-RelativePathCompat([string]$BasePath, [string]$Path) {
+  if ([IO.Path].GetMethod("GetRelativePath", [type[]]@([string], [string]))) {
+    return [IO.Path]::GetRelativePath($BasePath, $Path)
+  }
+
+  $baseFullPath = [IO.Path]::GetFullPath($BasePath).TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
+  $targetFullPath = [IO.Path]::GetFullPath($Path)
+  $baseUri = New-Object System.Uri($baseFullPath)
+  $targetUri = New-Object System.Uri($targetFullPath)
+  return [Uri]::UnescapeDataString($baseUri.MakeRelativeUri($targetUri).ToString()).Replace("/", [IO.Path]::DirectorySeparatorChar)
+}
+
 function Read-SyncTargets([string]$ManifestPath) {
   $targets = @()
   $current = $null
@@ -64,7 +76,7 @@ foreach ($target in Read-SyncTargets $manifestPath) {
   }
   foreach ($file in $files) {
     if ($file.Extension -notin @(".md", ".txt")) { continue }
-    $relative = Normalize-PathText ([IO.Path]::GetRelativePath($RepoRoot, $file.FullName))
+    $relative = Normalize-PathText (Get-RelativePathCompat $RepoRoot $file.FullName)
     Assert-ManagedHeader $file $relative
   }
 }
