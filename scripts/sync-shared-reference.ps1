@@ -13,6 +13,20 @@ function Normalize-PathText([string]$Value) {
   return $Value.Replace("\", "/").Trim("/")
 }
 
+function Normalize-ManagedDestination([string]$Value) {
+  $rawValue = $Value.Trim().Trim('"').Trim("'")
+  if ([IO.Path]::IsPathRooted($rawValue)) {
+    throw "Managed destination must be relative: $Value"
+  }
+
+  $destination = Normalize-PathText $rawValue
+  $segments = @($destination.Split("/"))
+  if (!$destination.StartsWith(".shared/") -or $segments -contains "." -or $segments -contains "..") {
+    throw "Managed destination must stay under .shared/: $Value"
+  }
+  return $destination
+}
+
 function Get-RelativePathCompat([string]$BasePath, [string]$Path) {
   $baseFullPath = [IO.Path]::GetFullPath($BasePath).TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
   $targetFullPath = [IO.Path]::GetFullPath($Path)
@@ -74,16 +88,32 @@ function Read-SyncTargets([string]$ManifestPath) {
   $current = $null
   foreach ($line in Get-Content -Encoding UTF8 $ManifestPath) {
     if ($line -match '^\s*-\s+source:\s*(.+?)\s*$') {
-      if ($current) { $targets += [pscustomobject]$current }
+      if ($current) {
+        if (!$current.Destination) {
+          throw "Missing destination for sync source: $($current.Source)"
+        }
+        $targets += [pscustomobject]$current
+      }
       $current = @{ Source = (Normalize-PathText $matches[1]); Destination = $null }
       continue
     }
-    if ($current -and $line -match '^\s+destination:\s*(.+?)\s*$') {
-      $current.Destination = (Normalize-PathText $matches[1])
+    if ($line -match '^\s+destination:\s*(.*?)\s*$') {
+      if (!$current) {
+        throw "Destination without sync source: $line"
+      }
+      if ($current.Destination) {
+        throw "Duplicate destination for sync source: $($current.Source)"
+      }
+      $current.Destination = Normalize-ManagedDestination $matches[1]
     }
   }
-  if ($current) { $targets += [pscustomobject]$current }
-  return $targets | Where-Object { $_.Source -and $_.Destination }
+  if ($current) {
+    if (!$current.Destination) {
+      throw "Missing destination for sync source: $($current.Source)"
+    }
+    $targets += [pscustomobject]$current
+  }
+  return $targets
 }
 
 function Get-FileTextOrNull([string]$Path) {
