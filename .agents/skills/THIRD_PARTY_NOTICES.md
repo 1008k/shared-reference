@@ -10,6 +10,7 @@ The directories below are vendored into `shared-reference` as optional shared sk
 | --- | --- | --- | --- |
 | `taste-skill/` | `Leonxlnx/taste-skill` | `b17742737e796305d829b3ad39eda3add0d79060` | MIT Copyright (c) 2026 Leonxlnx |
 | `brainstorming/`, `writing-plans/`, `verification-before-completion/` | `obra/superpowers` | `d884ae04edebef577e82ff7c4e143debd0bbec99` | MIT Copyright (c) 2025 Jesse Vincent |
+| `diagnosing-bugs/`, `grilling/`, `tdd/` | `mattpocock/skills` | `391a2701dd948f94f56a39f7533f8eea9a859c87` | MIT Copyright (c) 2026 Matt Pocock |
 
 ## MIT License
 

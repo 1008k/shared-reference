@@ -22,11 +22,14 @@ Use this file as the entry point when deciding whether to use shared skills or o
 ## Optional Third-Party Skills
 
 - `taste-skill/`: Use for frontend implementation or redesign when a deliberate visual direction is needed. It is an experimental upstream skill; project UX and accessibility requirements remain higher priority.
-- `brainstorming/`: Use to refine requirements or design choices before implementation. Do not treat its workflow as an automatic requirement for every task.
-- `writing-plans/`: Use for implementation plans when a change needs a concrete execution sequence.
-- `verification-before-completion/`: Use before declaring a non-trivial change complete; run checks that actually support the claim.
+- `brainstorming/`: Recommend an on-demand session when design refinement would reduce rework; start it only after the user accepts.
+- `diagnosing-bugs/`: Use for hard bugs and performance regressions; adapt its diagnostic loop to the project's documented conventions.
+- `grilling/`: Use only when the user explicitly asks to stress-test a plan or design. Ask one decision at a time; it does not create project documents automatically.
+- `tdd/`: Use when a feature or bug fix is explicitly test-first, or when durable integration tests are needed.
+- `writing-plans/`: Recommend an on-demand detailed plan for substantial or risky changes; start it only after the user accepts.
+- `verification-before-completion/`: Recommend an on-demand formal verification pass for releases, merges, or high-risk completion claims; start it only after the user accepts.
 
-These skills are shared vendor content, not project rules. Their source, pinned revisions, and license notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Update them only through an intentional upstream review and shared-reference commit; do not add their subagent, worktree, or Git workflows as automatic project behavior.
+These skills are shared vendor content, not project rules. Their source, pinned revisions, and license notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Update them only through an intentional upstream review and shared-reference commit; do not add their subagent, worktree, Git workflows, or mandatory test-first process as automatic project behavior.
 
 ## Optional Tooling Notes
 

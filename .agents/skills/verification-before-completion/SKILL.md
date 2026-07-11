@@ -1,11 +1,15 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+description: "Advisory: when a release, merge, or high-risk completion claim would benefit from stronger evidence, recommend an on-demand formal verification pass. Run it only after the user accepts; ordinary task checks remain lightweight."
 ---
 
 <!-- managed-by: shared-reference -->
 <!-- source-repo: https://github.com/1008k/shared-reference -->
 <!-- source-path: .agents/skills/verification-before-completion/SKILL.md -->
+
+## Shared-reference activation
+
+If the user has not explicitly requested this workflow, briefly recommend it and wait for acceptance before starting the formal verification pass.
 
 # Verification Before Completion
 

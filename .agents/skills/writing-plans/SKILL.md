@@ -1,11 +1,15 @@
 ---
 name: writing-plans
-description: Use when you have a spec or requirements for a multi-step task, before touching code
+description: "Advisory: when a substantial multi-step or risky change would benefit from a detailed execution plan, recommend an on-demand planning pass. Run it only after the user accepts; routine planning remains lightweight."
 ---
 
 <!-- managed-by: shared-reference -->
 <!-- source-repo: https://github.com/1008k/shared-reference -->
 <!-- source-path: .agents/skills/writing-plans/SKILL.md -->
+
+## Shared-reference activation
+
+If the user has not explicitly requested this workflow, briefly recommend it and wait for acceptance before writing the detailed plan.
 
 # Writing Plans
 

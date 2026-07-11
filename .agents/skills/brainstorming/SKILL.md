@@ -1,11 +1,15 @@
 ---
 name: brainstorming
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation."
+description: "Advisory: when a new feature, UI, or behavior change would benefit from design refinement, recommend an on-demand brainstorming session. Run it only after the user accepts; do not start it automatically for ordinary implementation or light Q&A."
 ---
 
 <!-- managed-by: shared-reference -->
 <!-- source-repo: https://github.com/1008k/shared-reference -->
 <!-- source-path: .agents/skills/brainstorming/SKILL.md -->
+
+## Shared-reference activation
+
+If the user has not explicitly requested this workflow, briefly recommend it and wait for acceptance before starting the interview.
 
 # Brainstorming Ideas Into Designs
 
