@@ -188,16 +188,17 @@ function Remove-StaleManagedFiles([string]$ProjectRoot, [string[]]$ManagedPaths,
 function Assert-NoUnsafeLocalChange([string]$Repo, [string]$OldRef, [string]$SourcePath, [string]$DestPath, [string]$NewText) {
   $currentText = Get-FileTextOrNull $DestPath
   if ($null -eq $currentText) { return }
+  $currentCompare = Normalize-FileTextForCompare $currentText
+  $newCompare = Normalize-FileTextForCompare $NewText
   $isManaged = $currentText -match 'managed-by:\s*(shared-reference|agent-rules)'
   if (!$isManaged) {
+    if ($currentCompare -eq $newCompare) { return }
     if ($Force) { return }
     throw "Refusing to overwrite unmanaged file: $DestPath. Re-run with -Force only when adopting it into shared-reference."
   }
   if ($Force) { return }
   $oldText = Get-GitFileTextOrNull $Repo $OldRef $SourcePath
-  $currentCompare = Normalize-FileTextForCompare $currentText
   $oldCompare = Normalize-FileTextForCompare $oldText
-  $newCompare = Normalize-FileTextForCompare $NewText
   if ($oldCompare -and $currentCompare -ne $oldCompare -and $currentCompare -ne $newCompare) {
     throw "Local changes detected in managed file: $DestPath. Move the change to the shared source with scripts/propose-shared-reference-change.ps1."
   }
