@@ -45,6 +45,11 @@ description: Concretize a new project from `docs/initial-brief.md` into the fron
 - `docs/initial-brief.md` の未定事項が識別できる
 - 実装開始前に詰めるべき論点が残っていれば明示されている
 
+## リポジトリ scaffold 時の Hygiene
+新規プロジェクトを作る・テンプレートから展開する際は、以下を最初に含める。
+- `.gitignore` に `.kilo/`（Agent-Manager の worktree 等のローカルツール状態）を除外する。これがないと `biome lint .` が worktree 内の `biome.json` を nested config とみなして失敗する。
+- `.gitattributes` を追加し、改行を `eol=lf` に固定する（`* text=auto eol=lf`）。未設定だと共有管理ファイル（YAML の lock 等）で CRLF/BOM の差分ノイズが発生し、YAML の先頭 BOM は厳密なパーサで警告の原因になる。
+
 ## 出力の型
 - 先に結論を示す
 - 未定事項がある場合は明示する

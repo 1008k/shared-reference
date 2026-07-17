@@ -1,0 +1,15 @@
+# 改行コードを LF に統一し、差分のノイズを抑える
+* text=auto eol=lf
+
+# バイナリ扱い（改行変換・差分化しない）
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.svg text
+*.wasm binary
+*.woff binary
+*.woff2 binary

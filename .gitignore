@@ -1,0 +1,8 @@
+# Local agent/tool state (Agent-Manager worktrees 等)
+.kilo/
+.kilo/**
+
+# Build / cache outputs
+dist/
+node_modules/
+.bun/
